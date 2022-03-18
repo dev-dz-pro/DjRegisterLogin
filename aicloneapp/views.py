@@ -3,7 +3,7 @@ from .models import User
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login
-
+from .forms import SignUpForm
 
 
 
@@ -15,24 +15,19 @@ def index(request):
 
 
 def register_request(request):
-    if request.method == "POST":
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-        password = request.POST['password']
-        if len(first_name) < 3 and len(last_name) < 3:
-            messages.add_message(request, messages.INFO, "First and last name must be at least 3 characters long")
-            return render(request, 'aicloneapp/register.html')
-        if password == request.POST['confirm_password'] and len(password) > 7:
-            username = first_name + "_" + last_name
-            user = User.objects.create_user(username=username,email=email, first_name=first_name, last_name=last_name, password=password)
-            user.save()
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.INFO, "Successfully registered")
             return redirect('login')
         else:
-            messages.add_message(request, messages.INFO, "Password must be at least 8 characters long and match the confirm password")
-            return render(request, 'aicloneapp/register.html')
+            messages.add_message(request, messages.ERROR, form.errors)
+            return redirect('register')
     else:
-        return render(request, 'aicloneapp/register.html', {})
+        form = SignUpForm()
+    return render(request, 'aicloneapp/register.html', {'form': form})
+
 
 
 
@@ -43,9 +38,10 @@ def login_request(request):
         user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
+            messages.add_message(request, messages.INFO, "Successfully Signed in")
             return redirect('index')
         else:
-            messages.add_message(request, messages.INFO, "Username or password is incorrect")
+            messages.add_message(request, messages.ERROR, "Username or password is incorrect")
             return render(request, 'aicloneapp/login.html')
     else:
         return render(request, 'aicloneapp/login.html', {})
@@ -53,4 +49,5 @@ def login_request(request):
 
 def logout_request(request):
     logout(request)
+    messages.add_message(request, messages.INFO, "Successfully Loged out")
     return redirect('login')

@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'aicloneapp',
-    
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'aicloneproject.urls'
+CRISPY_TEMPLATE_PACK="bootstrap4"
 
 TEMPLATES = [
     {

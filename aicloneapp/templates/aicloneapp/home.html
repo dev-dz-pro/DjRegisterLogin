@@ -1,6 +1,23 @@
-{% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
-{% else %}
-    <p>Welcome, new user. Please log in.</p>
-{% endif %}
-<a href="accounts/logout"><u>Logout</u></a>
+{% extends 'aicloneapp/base.html' %}
+
+{% block content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <div class="alert fade in {% if message.tags %} alert-{% if 'error' in message.tags %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}">
+                <a class="close" href="#" data-dismiss="alert">&times;</a>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
+    {% else %}
+        <p>Welcome, new user. Please log in.</p>
+    {% endif %}
+    <a href="accounts/logout"><u>Logout</u></a>
+    <br><br>
+    
+{% endblock %}
